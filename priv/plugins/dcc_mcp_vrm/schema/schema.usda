@@ -11,7 +11,7 @@
 over "GLOBAL" (
     customData = {
         string libraryName = "dcc_mcp_vrm"
-        string libraryPath = "thirdparty/aria_usd/priv/plugins/dcc_mcp_vrm"
+        string libraryPath = "priv/plugins/dcc_mcp_vrm"
     }
 )
 

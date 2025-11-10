@@ -54,7 +54,7 @@ if has_vrm:
 
 ## Installation
 
-The schema plugin is automatically available when the `thirdparty/aria_usd/priv/plugins/dcc_mcp_vrm` directory is in USD's plugin search path. To use it:
+The schema plugin is automatically available when the `priv/plugins/dcc_mcp_vrm` directory is in USD's plugin search path. To use it:
 
 1. Add the plugin directory to `PXR_PLUGINPATH_NAME` environment variable, or
 2. Place the plugin in USD's standard plugin search locations
@@ -62,7 +62,7 @@ The schema plugin is automatically available when the `thirdparty/aria_usd/priv/
 ## Schema Structure
 
 ```
-thirdparty/aria_usd/priv/plugins/dcc_mcp_vrm/
+priv/plugins/dcc_mcp_vrm/
 ├── plugInfo.json          # Plugin registration
 └── schema/
     └── schema.usda        # Schema definition
