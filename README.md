@@ -4,13 +4,17 @@ Standalone Elixir module for USD operations using Pythonx for AOUSD (Alliance fo
 
 ## Overview
 
-AriaUsd provides USD functionality for:
+AriaUsd provides core USD functionality for:
 - Creating and modifying USD prims and attributes
 - Composing USD layers
-- VRM to USD conversion (with VRM schema support)
-- USD to TSCN conversion
-- TSCN to USD conversion
-- Unity package import and conversion
+- Stage operations (create, open, save)
+- Mesh primitive operations
+- Variant set management
+
+Format conversion modules (VRM, TSCN, Unity) are available as separate packages:
+- `aria_usd_vrm` - VRM to USD conversion
+- `aria_usd_tscn` - TSCN ↔ USD conversion  
+- `aria_usd_unity` - Unity ↔ USD conversion
 
 ## Installation
 
@@ -40,19 +44,24 @@ end
 # Create a prim
 AriaUsd.create_prim("stage.usd", "/MyPrim", "Xform")
 
-# Convert VRM to USD
-AriaUsd.vrm_to_usd("model.vrm", "output.usd", 
-  vrm_extensions: extensions,
-  vrm_metadata: metadata
-)
+# Create a mesh primitive
+AriaUsd.create_mesh("stage.usd", "/MyMesh")
 
-# Convert USD to TSCN
-AriaUsd.usd_to_tscn("model.usd", "output.tscn")
+# Set mesh points
+AriaUsd.set_mesh_points("stage.usd", "/MyMesh", [{0.0, 0.0, 0.0}, {1.0, 0.0, 0.0}])
+
+# Create variant set
+AriaUsd.create_variant_set("stage.usd", "/Root", "meshTopology")
 ```
 
-## USD Schema Plugin
+## Format Conversion Packages
 
-The module includes a USD schema plugin for preserving VRM-specific data in USD files. The plugin is located at `priv/plugins/dcc_mcp_vrm/` and provides the `VrmAPI` schema for storing VRM extensions and metadata.
+Format conversion modules have been extracted into separate packages:
+- **aria_usd_vrm** - VRM to USD conversion (includes VRM schema plugin)
+- **aria_usd_tscn** - TSCN ↔ USD conversion for Godot integration
+- **aria_usd_unity** - Unity ↔ USD conversion
+
+These packages depend on `aria_usd` for core USD operations.
 
 ## Requirements
 

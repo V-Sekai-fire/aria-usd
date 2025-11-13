@@ -5,13 +5,14 @@ defmodule AriaUsd do
   @moduledoc """
   Standalone Elixir module for USD operations using Pythonx for AOUSD (Alliance for OpenUSD) operations via pxr.
 
-  This module provides USD functionality for:
+  This module provides core USD functionality for:
   - Creating and modifying USD prims and attributes
   - Composing USD layers
-  - VRM to USD conversion (with VRM schema support)
-  - USD to TSCN conversion
-  - TSCN to USD conversion
-  - Unity package import and conversion
+  - Stage operations (create, open, save)
+  - Mesh primitive operations
+  - Variant set management
+
+  Format conversion modules (VRM, TSCN, Unity) are available as separate packages.
 
   This module delegates to specialized sub-modules following the Single Responsibility Principle:
   - `AriaUsd.Pythonx` - Pythonx availability checking
@@ -20,9 +21,11 @@ defmodule AriaUsd do
   - `AriaUsd.Mesh` - Mesh primitive operations (create, set points/faces/normals)
   - `AriaUsd.VariantSet` - Variant set operations (create, add variant, set selection)
   - `AriaUsd.Layer` - Layer composition
-  - `AriaUsd.Vrm` - VRM conversion
-  - `AriaUsd.Tscn` - TSCN conversion
-  - `AriaUsd.Unity` - Unity conversion
+
+  Note: Format conversion modules (VRM, TSCN, Unity) have been moved to separate packages:
+  - `aria_usd_vrm` - VRM to USD conversion
+  - `aria_usd_tscn` - TSCN ↔ USD conversion
+  - `aria_usd_unity` - Unity ↔ USD conversion
   """
 
   @type usd_result :: {:ok, term()} | {:error, String.t()}
@@ -288,96 +291,4 @@ defmodule AriaUsd do
   """
   @spec compose_layer(String.t(), String.t(), String.t()) :: usd_result()
   defdelegate compose_layer(base_file, layer_file, output_file), to: AriaUsd.Layer
-
-  # Delegate to Vrm module
-  @doc """
-  Converts VRM to USD (one-way, transmission format to internal format).
-
-  ## Parameters
-    - vrm_path: Path to VRM file
-    - output_usd_path: Path to output USD file
-    - opts: Optional keyword list with :vrm_extensions and :vrm_metadata for preserving VRM data
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message
-    - `{:error, String.t()}` - Error message
-  """
-  @spec vrm_to_usd(String.t(), String.t(), keyword()) :: usd_result()
-  defdelegate vrm_to_usd(vrm_path, output_usd_path, opts \\ []), to: AriaUsd.Vrm
-
-  # Delegate to Tscn module
-  @doc """
-  Converts USD to Godot TSCN. TSCN is Godot's internal format, but USD ↔ TSCN conversion has loss due to different scene graph representations.
-
-  ## Parameters
-    - usd_path: Path to USD file
-    - output_tscn_path: Path to output TSCN file
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message
-    - `{:error, String.t()}` - Error message
-  """
-  @spec usd_to_tscn(String.t(), String.t()) :: usd_result()
-  defdelegate usd_to_tscn(usd_path, output_tscn_path), to: AriaUsd.Tscn
-
-  @doc """
-  Converts Godot TSCN to USD. TSCN is Godot's internal format, but USD ↔ TSCN conversion has loss due to different scene graph representations.
-
-  ## Parameters
-    - tscn_path: Path to TSCN file
-    - output_usd_path: Path to output USD file
-    - opts: Optional keyword list with :tscn_data for pre-parsed TSCN data
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message
-    - `{:error, String.t()}` - Error message
-  """
-  @spec tscn_to_usd(String.t(), String.t(), keyword()) :: usd_result()
-  defdelegate tscn_to_usd(tscn_path, output_usd_path, opts \\ []), to: AriaUsd.Tscn
-
-  # Delegate to Unity module
-  @doc """
-  Converts USD to Unity package (.unitypackage) format.
-  This is a lower-loss conversion compared to other transmission formats.
-
-  ## Parameters
-    - usd_path: Path to USD file
-    - output_unitypackage_path: Path to output .unitypackage file
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message
-    - `{:error, String.t()}` - Error message
-  """
-  @spec usd_to_unity_package(String.t(), String.t()) :: usd_result()
-  defdelegate usd_to_unity_package(usd_path, output_unitypackage_path), to: AriaUsd.Unity
-
-  @doc """
-  Converts Unity assets to USD format.
-  Uses unidot_importer via Godot or direct conversion.
-
-  ## Parameters
-    - unity_asset_path: Path to Unity asset file or directory
-    - output_usd_path: Path to output USD file
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message
-    - `{:error, String.t()}` - Error message
-  """
-  @spec convert_unity_to_usd(String.t(), String.t()) :: usd_result()
-  defdelegate convert_unity_to_usd(unity_asset_path, output_usd_path), to: AriaUsd.Unity
-
-  @doc """
-  Imports a Unity package (.unitypackage) file.
-  Uses unidot_importer via Godot headless mode or Python-based Unity package parser.
-
-  ## Parameters
-    - unitypackage_path: Path to .unitypackage file
-    - output_dir: Directory to extract/import to
-
-  ## Returns
-    - `{:ok, String.t()}` - Success message with import details
-    - `{:error, String.t()}` - Error message
-  """
-  @spec import_unity_package(String.t(), String.t()) :: usd_result()
-  defdelegate import_unity_package(unitypackage_path, output_dir), to: AriaUsd.Unity
 end
