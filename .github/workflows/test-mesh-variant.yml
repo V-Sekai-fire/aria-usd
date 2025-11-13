@@ -1,0 +1,66 @@
+name: Test Mesh and Variant Support
+
+on:
+  push:
+    branches: [ feature/mesh-and-variant-support ]
+  pull_request:
+    branches: [ feature/mesh-and-variant-support, main ]
+
+jobs:
+  test-new-modules:
+    name: Test New Modules (Stage, Mesh, VariantSet)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Elixir
+        uses: erlef/setup-elixir@v1
+        with:
+          elixir-version: '1.18'
+          otp-version: '26'
+
+      - name: Install Python and USD dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3 python3-pip
+          pip3 install --user numpy scipy || true
+
+      - name: Install dependencies
+        run: |
+          mix deps.get
+          mix deps.compile
+
+      - name: Compile new modules
+        run: |
+          mix compile --warnings-as-errors
+        env:
+          MIX_ENV: test
+
+      - name: Check module exports
+        run: |
+          # Verify that new modules are accessible
+          mix run -e "
+            Code.ensure_loaded?(AriaUsd.Stage) && IO.puts(\"✓ AriaUsd.Stage loaded\")
+            Code.ensure_loaded?(AriaUsd.Mesh) && IO.puts(\"✓ AriaUsd.Mesh loaded\")
+            Code.ensure_loaded?(AriaUsd.VariantSet) && IO.puts(\"✓ AriaUsd.VariantSet loaded\")
+            
+            # Check delegates in main module
+            functions = AriaUsd.__info__(:functions)
+            required = [:create_stage, :open_stage, :save_stage, :create_mesh, 
+                       :set_mesh_points, :set_mesh_faces, :set_mesh_normals,
+                       :create_variant_set, :get_variant_set, :set_variant_selection, :add_variant]
+            
+            missing = Enum.filter(required, fn f -> !Keyword.has_key?(functions, f) end)
+            if length(missing) > 0 do
+              IO.puts(\"✗ Missing functions: #{inspect(missing)}\")
+              System.halt(1)
+            else
+              IO.puts(\"✓ All required functions exported\")
+            end
+          "
+
+      - name: Run tests
+        run: mix test
+        env:
+          MIX_ENV: test
+

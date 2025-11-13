@@ -66,4 +66,3 @@ defmodule AriaUsd.Layer do
     e -> {:error, Exception.message(e)}
   end
 end
-

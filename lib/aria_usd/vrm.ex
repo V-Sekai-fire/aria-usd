@@ -188,4 +188,3 @@ defmodule AriaUsd.Vrm do
     e -> {:error, Exception.message(e)}
   end
 end
-

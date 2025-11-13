@@ -43,4 +43,3 @@ defmodule AriaUsd.Pythonx do
     end
   end
 end
-

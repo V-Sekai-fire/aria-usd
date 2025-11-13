@@ -207,7 +207,8 @@ defmodule AriaUsdTest do
             assert {:ok, _} = AriaUsd.create_prim(tmp_usd, prim_path, "Xform")
 
             # Set attribute
-            assert {:ok, _message} = AriaUsd.set_attribute(tmp_usd, prim_path, attr_name, attr_value)
+            assert {:ok, _message} =
+                     AriaUsd.set_attribute(tmp_usd, prim_path, attr_name, attr_value)
 
             # Verify attribute value
             value = get_attribute_value(tmp_usd, prim_path, attr_name)
@@ -235,7 +236,8 @@ defmodule AriaUsdTest do
             assert {:ok, _} = AriaUsd.create_prim(tmp_usd, prim_path, "Xform")
 
             # Set attribute (should create it)
-            assert {:ok, _message} = AriaUsd.set_attribute(tmp_usd, prim_path, attr_name, attr_value)
+            assert {:ok, _message} =
+                     AriaUsd.set_attribute(tmp_usd, prim_path, attr_name, attr_value)
 
             # Verify attribute was created and has correct value
             value = get_attribute_value(tmp_usd, prim_path, attr_name)
@@ -499,6 +501,7 @@ defmodule AriaUsdTest do
 
         :ok ->
           tmp_usd = tmp_usd_path("tscn_to_usd")
+
           tscn_data = %{
             "nodes" => [
               %{"name" => "Root", "type" => "Node", "parent" => nil, "properties" => %{}}
@@ -541,7 +544,8 @@ defmodule AriaUsdTest do
           :ok
 
         :ok ->
-          tmp_unitypackage = System.tmp_dir!()
+          tmp_unitypackage =
+            System.tmp_dir!()
             |> Path.join("test_unity_#{:rand.uniform(1_000_000)}.unitypackage")
 
           try do
@@ -617,4 +621,3 @@ defmodule AriaUsdTest do
     end
   end
 end
-
