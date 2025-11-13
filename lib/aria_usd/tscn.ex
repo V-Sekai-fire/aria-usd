@@ -223,4 +223,3 @@ defmodule AriaUsd.Tscn do
     e -> {:error, Exception.message(e)}
   end
 end
-

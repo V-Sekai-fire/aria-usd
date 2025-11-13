@@ -268,4 +268,3 @@ defmodule AriaUsd.Unity do
     e -> {:error, Exception.message(e)}
   end
 end
-

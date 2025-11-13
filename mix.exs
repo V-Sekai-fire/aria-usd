@@ -27,4 +27,3 @@ defmodule AriaUsd.MixProject do
     ]
   end
 end
-
